@@ -31,13 +31,14 @@ def create_creatives(creatives):
     logger.info(u'Created creative with name "{name}".'.format(name=creative['name']))
   return created_creative_ids
 
-def create_creative_config(name, advertiser_id):
+def create_creative_config(name, advertiser_id, enable_safeframe):
   """
   Creates a creative config object.
 
   Args:
     name (str): the name of the creative
     advertiser_id (int): the ID of the advertiser in DFP
+    enable_safeframe (bool): enable or disable creatives serve into a safeframe
   Returns:
     an object: the line item config
   """
@@ -57,7 +58,7 @@ def create_creative_config(name, advertiser_id):
       'height': '1'
     },
     'snippet': snippet,
-    'isSafeFrameCompatible': True,
+    'isSafeFrameCompatible': enable_safeframe,
   }
 
   return config
@@ -78,7 +79,7 @@ def build_creative_name(bidder_code, order_name, creative_num):
         bidder_code=bidder_code, order_name=order_name, num=creative_num)
 
 def create_duplicate_creative_configs(bidder_code, order_name, advertiser_id,
-  num_creatives=1):
+  num_creatives=1, enable_safeframe=True):
   """
   Returns an array of creative config object.
 
@@ -87,6 +88,7 @@ def create_duplicate_creative_configs(bidder_code, order_name, advertiser_id,
     order_name (int): the name of the order in DFP
     advertiser_id (int): the ID of the advertiser in DFP
     num_creatives (int): how many creative configs to generate
+    enable_safeframe (bool): enable or disable creatives serve into a safeframe
   Returns:
     an array: an array of length `num_creatives`, each item a line item config
   """
@@ -95,6 +97,7 @@ def create_duplicate_creative_configs(bidder_code, order_name, advertiser_id,
     config = create_creative_config(
       name=build_creative_name(bidder_code, order_name, creative_num),
       advertiser_id=advertiser_id,
+      enable_safeframe=enable_safeframe,
     )
     creative_configs.append(config)
   return creative_configs

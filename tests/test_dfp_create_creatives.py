@@ -21,6 +21,7 @@ class DFPCreateCreativesTests(TestCase):
       dfp.create_creatives.create_creative_config(
         name='My Creative',
         advertiser_id=1234567,
+        enable_safeframe=True,
       )
     ]
 
@@ -47,10 +48,11 @@ class DFPCreateCreativesTests(TestCase):
       dfp.create_creatives.create_creative_config(
         name='My Creative',
         advertiser_id=1234567,
+        enable_safeframe=False,
       ),
       {
         'advertiserId': 1234567,
-        'isSafeFrameCompatible': True,
+        'isSafeFrameCompatible': False,
         'name': 'My Creative',
         'size': {
           'height': '1',
@@ -142,9 +144,10 @@ class DFPCreateCreativesTests(TestCase):
     order_name = 'An order'
     advertiser_id = 12345
     creative_num = 4
+    enable_safeframe = True
 
     configs = dfp.create_creatives.create_duplicate_creative_configs(
-      bidder_code, order_name, advertiser_id, creative_num)
+      bidder_code, order_name, advertiser_id, creative_num, enable_safeframe)
 
     # Assert we created the correct number of configs.
     self.assertEqual(mock_create_creative_config.call_count, creative_num)
