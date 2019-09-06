@@ -101,6 +101,18 @@ class AddNewPrebidPartnerTests(TestCase):
     args, kwargs = mock_setup_partners.call_args
     self.assertEqual(args[9], 'EUR')
 
+  @patch('settings.DFP_CREATIVE_FORMAT', '{bidder_code}: HB {order_name}, #{num:0>2}', create=True)
+  @patch('tasks.add_new_prebid_partner.setup_partner')
+  @patch('tasks.add_new_prebid_partner.input', return_value='y')
+  def test_custom_creative_format(self, mock_input, mock_setup_partners,
+    mock_dfp_client):
+    """
+    Ensure we use the currency code setting if it exists.
+    """
+    tasks.add_new_prebid_partner.main()
+    args, kwargs = mock_setup_partners.call_args
+    self.assertEqual(args[10], '{bidder_code}: HB {order_name}, #{num:0>2}')
+
   def test_price_bucket_validity_missing_key(self, mock_dfp_client):
     """
     It throws an exception of the price bucket setting
@@ -230,7 +242,7 @@ class AddNewPrebidPartnerTests(TestCase):
     tasks.add_new_prebid_partner.setup_partner(user_email=email, advertiser_name=advertiser, order_name=order,
                                                placements=placements, ad_units=[], sizes=sizes,
                                                bidder_code=bidder_code, prices=prices, num_creatives=2,
-                                               currency_code='USD')
+                                               currency_code='USD', creative_format='{bidder_code}: HB {order_name}, #{num:0>2}')
 
     mock_get_users.get_user_id_by_email.assert_called_once_with(email)
     mock_get_placements.get_placement_ids_by_name.assert_called_once_with(
@@ -240,7 +252,7 @@ class AddNewPrebidPartnerTests(TestCase):
     mock_create_orders.create_order.assert_called_once_with(order, 246810,
       14523)
     (mock_create_creatives.create_duplicate_creative_configs
-      .assert_called_once_with(bidder_code, order, 246810, 2))
+      .assert_called_once_with(bidder_code, order, 246810, 2, '{bidder_code}: HB {order_name}, #{num:0>2}'))
     mock_create_creatives.create_creatives.assert_called_once()
     mock_create_line_items.create_line_items.assert_called_once()
     mock_licas.make_licas.assert_called_once()

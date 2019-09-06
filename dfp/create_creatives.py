@@ -62,7 +62,7 @@ def create_creative_config(name, advertiser_id):
 
   return config
 
-def build_creative_name(bidder_code, order_name, creative_num):
+def build_creative_name(bidder_code, order_name, creative_num, creative_format):
     """
     Returns a name for a creative.
 
@@ -71,14 +71,15 @@ def build_creative_name(bidder_code, order_name, creative_num):
       order_name (int): the name of the order in DFP
       creative_num (int): the num_creatives distinguising this creative from any
         duplicates
+      creative_format (str): the format for creative name
     Returns:
       a string
     """
-    return '{bidder_code}: HB {order_name}, #{num}'.format(
+    return creative_format.format(
         bidder_code=bidder_code, order_name=order_name, num=creative_num)
 
 def create_duplicate_creative_configs(bidder_code, order_name, advertiser_id,
-  num_creatives=1):
+  num_creatives=1, creative_format='{bidder_code}: HB {order_name}, #{num}'):
   """
   Returns an array of creative config object.
 
@@ -87,13 +88,14 @@ def create_duplicate_creative_configs(bidder_code, order_name, advertiser_id,
     order_name (int): the name of the order in DFP
     advertiser_id (int): the ID of the advertiser in DFP
     num_creatives (int): how many creative configs to generate
+    creative_format (str): the format for creative name
   Returns:
     an array: an array of length `num_creatives`, each item a line item config
   """
   creative_configs = []
   for creative_num in range(1, num_creatives + 1):
     config = create_creative_config(
-      name=build_creative_name(bidder_code, order_name, creative_num),
+      name=build_creative_name(bidder_code, order_name, creative_num, creative_format),
       advertiser_id=advertiser_id,
     )
     creative_configs.append(config)

@@ -114,18 +114,18 @@ class DFPCreateCreativesTests(TestCase):
     """
 
     self.assertEqual(
-      dfp.create_creatives.build_creative_name('coolbiddr', 'Order Up!', 1),
+      dfp.create_creatives.build_creative_name('coolbiddr', 'Order Up!', 1, '{bidder_code}: HB {order_name}, #{num}'),
       'coolbiddr: HB Order Up!, #1'
     )
 
     self.assertEqual(
-      dfp.create_creatives.build_creative_name('coolbiddr', 'Order Up!', 2),
-      'coolbiddr: HB Order Up!, #2'
+      dfp.create_creatives.build_creative_name('coolbiddr', 'Order Up!', 2, '{bidder_code}: HB {order_name}, #{num:0>2}'),
+      'coolbiddr: HB Order Up!, #02'
     )
 
     self.assertEqual(
-      dfp.create_creatives.build_creative_name('anotherpartner', 'ordrrr', 11),
-      'anotherpartner: HB ordrrr, #11'
+      dfp.create_creatives.build_creative_name('anotherpartner', 'ordrrr', 11, '{bidder_code}: HB {order_name}, #{num:0>3}'),
+      'anotherpartner: HB ordrrr, #011'
     )
 
   @patch('dfp.create_creatives.create_creative_config')
@@ -142,9 +142,10 @@ class DFPCreateCreativesTests(TestCase):
     order_name = 'An order'
     advertiser_id = 12345
     creative_num = 4
+    creative_format = '{bidder_code}: HB {order_name}, #{num:0>2}'
 
     configs = dfp.create_creatives.create_duplicate_creative_configs(
-      bidder_code, order_name, advertiser_id, creative_num)
+      bidder_code, order_name, advertiser_id, creative_num, creative_format)
 
     # Assert we created the correct number of configs.
     self.assertEqual(mock_create_creative_config.call_count, creative_num)

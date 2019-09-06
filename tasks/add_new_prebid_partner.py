@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 def setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices,
-                  num_creatives, currency_code):
+                  num_creatives, currency_code, creative_format):
   """
   Call all necessary DFP tasks for a new Prebid partner setup.
   """
@@ -73,7 +73,7 @@ def setup_partner(user_email, advertiser_name, order_name, placements, ad_units,
 
   # Create creatives.
   creative_configs = dfp.create_creatives.create_duplicate_creative_configs(
-      bidder_code, order_name, advertiser_id, num_creatives)
+      bidder_code, order_name, advertiser_id, num_creatives, creative_format)
   creative_ids = dfp.create_creatives.create_creatives(creative_configs)
 
   # Get DFP key IDs for line item targeting.
@@ -293,6 +293,8 @@ def main():
 
   currency_code = getattr(settings, 'DFP_CURRENCY_CODE', 'USD')
 
+  creative_format = getattr(settings, 'DFP_CREATIVE_FORMAT', '{bidder_code}: HB {order_name}, #{num}')
+
   # How many creatives to attach to each line item. We need at least one
   # creative per ad unit on a page. See:
   # https://github.com/kmjennison/dfp-prebid-setup/issues/13
@@ -349,7 +351,7 @@ def main():
     logger.info('Exiting.')
     return
 
-  setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices, num_creatives, currency_code)
+  setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices, num_creatives, currency_code, creative_format)
 
 if __name__ == '__main__':
   main()
