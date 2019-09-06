@@ -67,6 +67,11 @@ DFP_USE_EXISTING_ORDER_IF_EXISTS = False
 # DFP_LINE_ITEM_FORMAT = u'{bidder_code}: HB ${price:0>5}'
 
 # Optional
+# The format for creative name. Defaults to '{bidder_code}: HB {order_name}, #{num}'.
+# This should be specified in python's format syntax.
+# DFP_CREATIVE_FORMAT = '{bidder_code}: HB {order_name}, #{num:0>2}'
+
+# Optional
 # Enable or disable creatives serve into a safeframe. Defaults to True.
 # DFP_ENABLE_CREATIVE_SAFEFRAME = True
 

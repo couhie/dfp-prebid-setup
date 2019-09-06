@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 def setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices,
-                  num_creatives, currency_code, line_item_format, enable_safeframe):
+                  num_creatives, currency_code, line_item_format, creative_format, enable_safeframe):
   """
   Call all necessary DFP tasks for a new Prebid partner setup.
   """
@@ -73,7 +73,7 @@ def setup_partner(user_email, advertiser_name, order_name, placements, ad_units,
 
   # Create creatives.
   creative_configs = dfp.create_creatives.create_duplicate_creative_configs(
-      bidder_code, order_name, advertiser_id, num_creatives, enable_safeframe)
+      bidder_code, order_name, advertiser_id, num_creatives, creative_format, enable_safeframe)
   creative_ids = dfp.create_creatives.create_creatives(creative_configs)
 
   # Get DFP key IDs for line item targeting.
@@ -296,6 +296,8 @@ def main():
 
   line_item_format = getattr(settings, 'DFP_LINE_ITEM_FORMAT', u'{bidder_code}: HB ${price}')
 
+  creative_format = getattr(settings, 'DFP_CREATIVE_FORMAT', '{bidder_code}: HB {order_name}, #{num}')
+
   enable_safeframe = getattr(settings, 'DFP_ENABLE_CREATIVE_SAFEFRAME', True)
 
   # How many creatives to attach to each line item. We need at least one
@@ -354,7 +356,7 @@ def main():
     logger.info('Exiting.')
     return
 
-  setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices, num_creatives, currency_code, line_item_format, enable_safeframe)
+  setup_partner(user_email, advertiser_name, order_name, placements, ad_units, sizes, bidder_code, prices, num_creatives, currency_code, line_item_format, creative_format, enable_safeframe)
 
 if __name__ == '__main__':
   main()
