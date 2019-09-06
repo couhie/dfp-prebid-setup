@@ -66,6 +66,10 @@ DFP_USE_EXISTING_ORDER_IF_EXISTS = False
 # This should be specified in python's format syntax.
 # DFP_LINE_ITEM_FORMAT = u'{bidder_code}: HB ${price:0>5}'
 
+# Optional
+# Enable or disable creatives serve into a safeframe. Defaults to True.
+# DFP_ENABLE_CREATIVE_SAFEFRAME = True
+
 #########################################################################
 # PREBID SETTINGS
 #########################################################################
